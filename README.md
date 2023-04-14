@@ -14,3 +14,15 @@ The game of breakthrough is typically won through careful planning and strategic
 
 (game explanation generated with GPT-3)
 
+### Running the program:
+
+Simply navigate to the src file and use command:
+
+    python3 game.py
+
+on Linux/Mac, or
+
+    python game.py
+
+on Windows.
+
