@@ -27,7 +27,7 @@ class Board:
             self.board = board
 
     def checkWin(self):
-        if '0' in self.board[0]:
+        if 'O' in self.board[0]:
             return Player.A
         elif 'X' in self.board[-1]:
             return Player.B

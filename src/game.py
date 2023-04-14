@@ -1,10 +1,10 @@
-import sys, time, pdb
+import sys, time
 from gamemap import Board, Player
 from agent import *
 
 DEPTH = 3
 
-class GameInstance():
+class GameInstance:
     def __init__(self, agent1, agent2):
         self.board = Board()
         self.agent1 = agent1
@@ -38,5 +38,5 @@ class GameInstance():
             
 
 
-game = GameInstance(MinimaxAgentOffensive1(Player.A), MinimaxAgentOffensive1(Player.B))
+game = GameInstance(AlphaBetaAgentOffensive1(Player.A), MinimaxAgentOffensive1(Player.B))
 game.gameloop()
