@@ -37,7 +37,7 @@ def checkValidMove(board, player, fromSquare, toSquare):
     if player == Player.HUMAN:
         if board[fromSquare[0]][fromSquare[1]] != 'O':
             return False
-        if board[toSquare[0]][toSquare[1]] != '.':
+        if board[toSquare[0]][toSquare[1]] != '.' or board[toSquare[0]][toSquare[1]] != 'X':
             return False
         if fromSquare[0] - toSquare[0] != 1:
             return False
@@ -47,16 +47,13 @@ def checkValidMove(board, player, fromSquare, toSquare):
     elif player == Player.AGENT:
         if board[fromSquare[0]][fromSquare[1]] != 'X':
             return False
-        if board[toSquare[0]][toSquare[1]] != '.':
+        if board[toSquare[0]][toSquare[1]] != '.' or board[toSquare[0]][toSquare[1]] != 'O':
             return False
         if toSquare[0] - fromSquare[0] != 1:
             return False
         if abs(fromSquare[1] - toSquare[1]) > 1:
             return False
         return True
-        
-
-
 
 '''
 Moves a piece on the board list from one square to another square.
