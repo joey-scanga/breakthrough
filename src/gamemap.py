@@ -1,9 +1,9 @@
-import sys
+import sys, copy
 from enum import Enum
 
 class Player(Enum):
     A = 1
-    B = 2
+    B = -1
 
 '''
 Returns a 2D array of characters with the initial board position. 
@@ -27,12 +27,12 @@ class Board:
             self.board = board
 
     def checkWin(self):
-        if self.board[0].contains('O'):
-            return 0
-        elif self.board[-1].contains('X'):
-            return 1
+        if '0' in self.board[0]:
+            return Player.A
+        elif 'X' in self.board[-1]:
+            return Player.B
         else: 
-            return -1
+            return 0
 
     def countPlayerA(self):
         count = 0
@@ -50,6 +50,33 @@ class Board:
                     count += 1
         return count
 
+    def getMovesForPlayerA(self):
+        moves = []
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if self.board[i][j] == 'O':
+                    if self.checkValidMove(Player.A, (i, j), (i-1, j)):
+                        moves.append((i, j, i-1, j))
+                    if self.checkValidMove(Player.A, (i, j), (i-1, j-1)):
+                        moves.append((i, j, i-1, j-1))
+                    if self.checkValidMove(Player.A, (i, j), (i-1, j+1)):
+                        moves.append((i, j, i-1, j+1))
+        return moves
+
+
+    def getMovesForPlayerB(self):
+        moves = []
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if self.board[i][j] == 'X':
+                    if self.checkValidMove(Player.B, (i, j), (i+1, j)):
+                        moves.append((i, j, i+1, j))
+                    if self.checkValidMove(Player.B, (i, j), (i+1, j-1)):
+                        moves.append((i, j, i+1, j-1))
+                    if self.checkValidMove(Player.B, (i, j), (i+1, j+1)):
+                        moves.append((i, j, i+1, j+1))
+        return moves
+
     def getPlayerARowScore(self):
         score = 8
         for row in self.board:
@@ -65,11 +92,15 @@ class Board:
         return score
     
     def checkValidMove(self, player, fromSquare, toSquare):
+        if -1 in fromSquare or -1 in toSquare or 8 in fromSquare or 8 in toSquare:
+            return False
         if player == Player.A:
             if self.board[fromSquare[0]][fromSquare[1]] != 'O':
                 return False
-            if self.board[toSquare[0]][toSquare[1]] != '.' or self.board[toSquare[0]][toSquare[1]] != 'X':
+            if self.board[toSquare[0]][toSquare[1]] != '.':
                 return False
+            if self.board[toSquare[0]][toSquare[1]] == 'X' and abs(fromSquare[1] - toSquare[1]) != 1:
+                return False 
             if fromSquare[0] - toSquare[0] != 1:
                 return False
             if abs(fromSquare[1] - toSquare[1]) > 1:
@@ -78,8 +109,10 @@ class Board:
         elif player == Player.B:
             if self.board[fromSquare[0]][fromSquare[1]] != 'X':
                 return False
-            if self.board[toSquare[0]][toSquare[1]] != '.' or self.board[toSquare[0]][toSquare[1]] != 'O':
+            if self.board[toSquare[0]][toSquare[1]] != '.':
                 return False
+            if self.board[toSquare[0]][toSquare[1]] == '0' and abs(fromSquare[1] - toSquare[1]) != 1:
+                return False 
             if toSquare[0] - fromSquare[0] != 1:
                 return False
             if abs(fromSquare[1] - toSquare[1]) > 1:
@@ -94,23 +127,30 @@ class Board:
     is made, returns False if not.
     '''
     def movePiece(self, player, fromSquare, toSquare):
-        if checkValidMove(player, fromSquare, toSquare):
+        if self.checkValidMove(player, fromSquare, toSquare):
             self.board[fromSquare[0]][fromSquare[1]] = '.'
             if player == Player.A:
                 self.board[toSquare[0]][toSquare[1]] = 'O'
             elif player == Player.B:
                 self.board[toSquare[0]][toSquare[1]] = 'X'
-            if checkWin() == 0:
-                print("Human won!")
-                sys.exit(0)
-            elif checkWin() == 1:
-                print("Agent won!")
-                sys.exit(0)
 
         else:
             return False
 
-    def testMove(self, player, fromSquare, toSquare):
+    def testCurrentBoard(self):
+        testData = {}
+        testData["countA"] = testBoard.countPlayerA()
+        testData["countB"] = testBoard.countPlayerB()
+        testData["rowScoreA"] = testBoard.getPlayerARowScore()
+        testData["rowScoreB"] = testBoard.getPlayerBRowScore()
+        return testData
+
+    def testMoveReturningBoard(self, player, fromSquare, toSquare):
+        testBoard = copy.deepcopy(self)
+        testBoard.movePiece(player, fromSquare, toSquare)
+        return testBoard
+
+    def testMoveReturningData(self, player, fromSquare, toSquare):
         testBoard = Board(self.board)
         testBoard.movePiece(player, fromSquare, toSquare)
         testData = {}         
@@ -118,6 +158,13 @@ class Board:
         testData["countB"] = testBoard.countPlayerB()
         testData["rowScoreA"] = testBoard.getPlayerARowScore()
         testData["rowScoreB"] = testBoard.getPlayerBRowScore()
+        return testData
+
+    def printBoard(self):
+        for row in self.board:
+            print(row)
+        print()
+
 
 
 
