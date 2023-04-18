@@ -1,4 +1,4 @@
-import sys, copy
+import sys, copy, pprint
 from enum import Enum
 
 class Player(Enum):
@@ -78,18 +78,25 @@ class Board:
         return moves
 
     def getPlayerARowScore(self):
-        score = 8
-        for row in self.board:
-            if not row.contains('O'):
+        score = 7
+        for row in self.board[1:]:
+            if not 'O' in row:
                 score -= 1
-        return score
+        
+        #Encourage agent to make winning move
+        if score == 7:
+            return 1000000
+        return score ** 3
 
     def getPlayerBRowScore(self):
-        score = 8
-        for row in self.board[-1::-1]:
-            if not row.contains('O'):
+        score = 7
+        for row in self.board[-2::-1]:
+            if not 'X' in row:
                 score -= 1
-        return score
+
+        if score == 7:
+            return 1000000
+        return score ** 3
     
     def checkValidMove(self, player, fromSquare, toSquare):
         if -1 in fromSquare or -1 in toSquare or 8 in fromSquare or 8 in toSquare:
@@ -161,8 +168,9 @@ class Board:
         return testData
 
     def printBoard(self):
+        pp = pprint.PrettyPrinter(indent=4)
         for row in self.board:
-            print(row)
+            pp.pprint(row)
         print()
 
 
