@@ -52,8 +52,6 @@ class IMinimax(IAgent):
                     if value > bestValue:
                         bestValue = value
                         bestMove = move
-                if depth == 2:
-                    return bestMove
                 return bestValue
 
             else:
@@ -65,8 +63,6 @@ class IMinimax(IAgent):
                     if value < bestValue:
                         bestValue = value
                         bestMove = move
-                if depth == 2:
-                    return bestMove
                 return bestValue
 
         return bestValue
@@ -164,19 +160,19 @@ class AlphaBetaAgentOffensive1(IAlphaBeta):
     def evaluate(self, board):
         if self.player == Player.A:
             countB = board.countPlayerB()
-            return 2 * (30 - countB) + (random.random() / 2)
+            return 2 * (30 - countB) + random.random()
         elif self.player == Player.B:
             countA = board.countPlayerA()
-            return 2 * (30 - countA) + (random.random() / 2)
+            return 2 * (30 - countA) + random.random()
 
 class AlphaBetaAgentDefensive1(IAlphaBeta):
     def evaluate(self, board):
         if self.player == Player.A:
             countA = board.countPlayerA()
-            return (2 * countA) + (random.random() / 2)
+            return (2 * countA) + random.random()
         elif self.player == Player.B:
             countB = board.countPlayerB()
-            return (2 * countB) + (random.random() / 2)
+            return (2 * countB) + random.random()
 
 class AlphaBetaAgentOffensive2(IAlphaBeta):
     def evaluate(self, board):
@@ -184,21 +180,21 @@ class AlphaBetaAgentOffensive2(IAlphaBeta):
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
             countB = board.countPlayerB()
-            return 2 * (30 - countB) + (20 * rowScoreA) - (15 * rowScoreB) + (random.random() / 2)
+            return 2 * (30 - countB) + rowScoreA  + random.random()
         elif self.player == Player.B:
             countA = board.countPlayerA()
-            return 2 * (30 - countA) + (20 * rowScoreB) - (15 * rowScoreB) + (random.random() / 2)
+            return 2 * (30 - countA) + rowScoreB + random.random()
 
 class AlphaBetaAgentDefensive2(IAlphaBeta):
     def evaluate(self, board):
+        rowScoreA = board.getPlayerARowScore()
+        rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
             countA = board.countPlayerB()
-            rowScoreA = board.getPlayerARowScore()
-            return (2 * countA) + (3 * rowScoreA) + (random.random() / 2)
+            return (2 * countA) - rowScoreB + random.random()
         elif self.player == Player.B:
             countB = board.countPlayerA()
-            rowScoreB = board.getPlayerBRowScore()
-            return (2 * countB) + (3 * rowScoreB) + (random.random() / 2)
+            return (2 * countB) + rowScoreA + random.random()
     
 class AlphaBetaAgentOffensive2WithOpening(IAlphaBeta):
     def __init__(self, player, depth):
@@ -210,10 +206,10 @@ class AlphaBetaAgentOffensive2WithOpening(IAlphaBeta):
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
             countB = board.countPlayerB()
-            return 2 * (30 - countB) + (20 * rowScoreA) - (15 * rowScoreB) + (random.random() / 2)
+            return 2 * (30 - countB) + (20 * rowScoreA) - (15 * rowScoreB) + random.random()
         elif self.player == Player.B:
             countA = board.countPlayerA()
-            return 2 * (30 - countA) + (20 * rowScoreB) - (15 * rowScoreB) + (random.random() / 2)
+            return 2 * (30 - countA) + (20 * rowScoreB) - (15 * rowScoreB) + random.random()
 
 class AlphaBetaAgentDefensive2WithOpening(IAlphaBeta):
     def __init__(self, player, depth):
@@ -224,29 +220,29 @@ class AlphaBetaAgentDefensive2WithOpening(IAlphaBeta):
         if self.player == Player.A:
             countA = board.countPlayerB()
             rowScoreA = board.getPlayerARowScore()
-            return (2 * countA) + (3 * rowScoreA) + (random.random() / 2)
+            return (2 * countA) + (3 * rowScoreA) + random.random()
         elif self.player == Player.B:
             countB = board.countPlayerA()
             rowScoreB = board.getPlayerBRowScore()
-            return (2 * countB) + (3 * rowScoreB) + (random.random() / 2)
+            return (2 * countB) + (3 * rowScoreB) + random.random()
 
 class MinimaxAgentOffensive1(IMinimax):
     def evaluate(self, board):
         if self.player == Player.A:
             countB = board.countPlayerB()
-            return 2 * (30 - countB) + (random.random() / 2)
+            return 2 * (30 - countB) + random.random()
         elif self.player == Player.B:
             countA = board.countPlayerA()
-            return 2 * (30 - countA) + (random.random() / 2)
+            return 2 * (30 - countA) + random.random()
             
 class MinimaxAgentDefensive1(IMinimax):
     def evaluate(self, board):
         if self.player == Player.A:
             countA = board.countPlayerA()
-            return (2 * countA) + (random.random() / 2)
+            return (2 * countA) + random.random()
         elif self.player == Player.B:
             countB = board.countPlayerB()
-            return (2 * countB) + (random.random() / 2)
+            return (2 * countB) + random.random()
 
 
     
