@@ -34,6 +34,32 @@ class Board:
         else: 
             return 0
 
+    def getColumnsForPlayerA(self):
+        columnScore = 0
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if i+1 <= 7 and i-1 >= 0:
+                    if self.board[i][j] == 'O' and self.board[i+1][j] == 'O' and self.board[i-1][j] == 'O':
+                        columnScore += 2
+                    elif self.board[i][j] == 'O' and self.board[i+1][j] == 'O':
+                        columnScore += 1
+                    elif self.board[i][j] == 'O' and self.board[i-1][j] == 'O':
+                        columnScore += 1
+        return columnScore
+                
+    def getColumnsForPlayerB(self):
+        columnScore = 0
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if i+1 <= 7 and i-1 >= 0:
+                    if self.board[i][j] == 'X' and self.board[i+1][j] == 'X' and self.board[i-1][j] == 'O':
+                        columnScore += 2
+                    elif self.board[i][j] == 'X' and self.board[i+1][j] == 'X':
+                        columnScore += 1
+                    elif self.board[i][j] == 'X' and self.board[i-1][j] == 'X':
+                        columnScore += 1
+        return columnScore
+
     def countPlayerA(self):
         count = 0
         for row in self.board:
@@ -78,14 +104,22 @@ class Board:
         return moves
 
     def getPlayerARowScore(self):
+        if '0' in self.board[0]:
+            return 10000000
+        elif 'O' in self.board[1]:
+            return 5000000
         score = 7
         for row in self.board[1:]:
             if not 'O' in row:
                 score -= 1
-        
+       
         return score
 
     def getPlayerBRowScore(self):
+        if 'X' in self.board[-1]:
+            return 10000000
+        elif 'X' in self.board[-2]:
+            return 5000000
         score = 7
         for row in self.board[-2::-1]:
             if not 'X' in row:
