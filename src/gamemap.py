@@ -163,9 +163,8 @@ class Board:
         return testData
 
     def printBoard(self):
-        pp = pprint.PrettyPrinter(indent=4)
         for row in self.board:
-            pp.pprint(row)
+            print(' '.join(row)+'\n')
         print()
 
 
