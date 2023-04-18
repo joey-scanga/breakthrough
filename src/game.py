@@ -13,7 +13,9 @@ agents = {
         3: ["AlphaBetaOffensive2", AlphaBetaAgentOffensive2, ALPHA_BETA_DEPTH],
         4: ["AlphaBetaDefensive2", AlphaBetaAgentDefensive2, ALPHA_BETA_DEPTH],
         5: ["MinimaxOffensive1", MinimaxAgentOffensive1, MINIMAX_DEPTH],
-        6: ["MinimaxDefensive1", MinimaxAgentDefensive1, MINIMAX_DEPTH]
+        6: ["MinimaxDefensive1", MinimaxAgentDefensive1, MINIMAX_DEPTH],
+        7: ["AlphaBetaOffensive2WithOpening", AlphaBetaAgentOffensive2WithOpening, ALPHA_BETA_DEPTH],
+        8: ["AlphaBetaDefensive2WithOpening", AlphaBetaAgentDefensive2WithOpening, ALPHA_BETA_DEPTH]
         }
 
 print("Choose agent A: ")
@@ -70,6 +72,9 @@ class GameInstance:
                     sys.exit(0)
                 else:
                     return Player.B
+
+            #breakpoint()
+
             
     #Simulate a number of games
     def manygames(self, gameno):
@@ -88,8 +93,7 @@ class GameInstance:
         print(f"Stalemates: {stalemates}")
 
 
-
 game = GameInstance(agenta[1](Player.A, agenta[2]), agentb[1](Player.B, agentb[2]))
-game.gameloop()
-#game.manygames(100)
+#game.gameloop()
+game.manygames(100)
 
