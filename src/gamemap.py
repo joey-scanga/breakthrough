@@ -83,10 +83,7 @@ class Board:
             if not 'O' in row:
                 score -= 1
         
-        #Encourage agent to make winning move
-        if score == 7:
-            return 1000000
-        return score ** 3
+        return score
 
     def getPlayerBRowScore(self):
         score = 7
@@ -94,9 +91,7 @@ class Board:
             if not 'X' in row:
                 score -= 1
 
-        if score == 7:
-            return 1000000
-        return score ** 3
+        return score
     
     def checkValidMove(self, player, fromSquare, toSquare):
         if -1 in fromSquare or -1 in toSquare or 8 in fromSquare or 8 in toSquare:

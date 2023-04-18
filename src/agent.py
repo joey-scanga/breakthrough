@@ -3,8 +3,9 @@ import random, math
 
 '''Interfaces'''
 class IAgent:
-    def __init__(self, player):
+    def __init__(self, player, depth):
         self.player = player
+        self.depth = depth
 
     def evaluate(self, board):
         pass
@@ -33,8 +34,8 @@ class IAgent:
         return board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
 
 class IMinimax(IAgent):
-    def minimax(self, board, player, depth):
-        stack = [(board, depth, player)]
+    def minimax(self, board, player):
+        stack = [(board, self.depth, player)]
         while stack:
             board, depth, player = stack.pop()
             if depth == 0:
@@ -69,8 +70,8 @@ class IMinimax(IAgent):
         return bestValue
 
 
-    def getBestMove(self, board, depth):
-        bestValue = self.minimax(board, self.player, depth)
+    def getBestMove(self, board):
+        bestValue = self.minimax(board, self.player)
         moves = self.getMoves(board)
         bestMoves = []
 
@@ -93,8 +94,8 @@ class IMinimax(IAgent):
 
 class IAlphaBeta(IAgent):
     # Alpha-beta pruning minimax function
-    def alphaBeta(self, board, player, depth, alpha, beta):
-        stack = [(board, depth, alpha, beta, player)]
+    def alphaBeta(self, board, player, alpha, beta):
+        stack = [(board, self.depth, alpha, beta, player)]
         bestValue = None
 
         while stack:
@@ -131,8 +132,8 @@ class IAlphaBeta(IAgent):
         return bestValue
 
 
-    def getBestMove(self, board, depth):
-        bestValue = self.alphaBeta(board, self.player, depth, math.inf, -math.inf)
+    def getBestMove(self, board):
+        bestValue = self.alphaBeta(board, self.player, math.inf, -math.inf)
         bestMoves = []
         moves = self.getMoves(board)
 
@@ -185,13 +186,13 @@ class AlphaBetaAgentOffensive2(IAlphaBeta):
 class AlphaBetaAgentDefensive2(IAlphaBeta):
     def evaluate(self, board):
         if self.player == Player.A:
-            countB = board.countPlayerB()
+            countA = board.countPlayerB()
             rowScoreA = board.getPlayerARowScore()
             return (2 * countA) + (3 * rowScoreA) + random.random()
         elif self.player == Player.B:
-            countA = board.countPlayerA()
+            countB = board.countPlayerA()
             rowScoreB = board.getPlayerBRowScore()
-            return (2 * countA) + (3 * rowScoreB) + random.random()
+            return (2 * countB) + (3 * rowScoreB) + random.random()
     
 class MinimaxAgentOffensive1(IMinimax):
     def evaluate(self, board):
