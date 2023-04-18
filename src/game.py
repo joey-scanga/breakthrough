@@ -18,13 +18,19 @@ class GameInstance:
         while self.board.checkWin() == 0:
             if turn == self.agent1.player:
                 move = self.agent1.getBestMove(self.board, DEPTH)
-                self.board.movePiece(self.agent1.player, (move[0], move[1]), (move[2], move[3]))
+                if move:
+                    self.board.movePiece(self.agent1.player, (move[0], move[1]), (move[2], move[3]))
+                else:
+                    print("Player A skips!")
                 turn = Player.B
                 self.board.printBoard()
                 time.sleep(0.1)
             elif turn == self.agent2.player:
                 move = self.agent2.getBestMove(self.board, DEPTH)
-                self.board.movePiece(self.agent2.player, (move[0], move[1]), (move[2], move[3]))
+                if move:
+                    self.board.movePiece(self.agent2.player, (move[0], move[1]), (move[2], move[3]))
+                else:
+                    print("Player B skips!")
                 turn = Player.A
                 self.board.printBoard()
                 time.sleep(0.1)
