@@ -71,12 +71,19 @@ class IMinimax(IAgent):
 
     def getBestMove(self, board, depth):
         bestValue = self.minimax(board, self.player, depth)
+        moves = self.getMoves(board)
         bestMoves = []
-        for move in self.getMoves(board):
+
+        #Skips turn if no valid moves
+        if not moves:
+            return
+
+        for move in moves:
             newBoard = self.makeMove(board, move)
             value = self.evaluate(newBoard)
             if value == bestValue:
                 bestMoves.append(move)
+
        
         if not bestMoves:
             return random.choice(self.getMoves(board))
@@ -127,7 +134,13 @@ class IAlphaBeta(IAgent):
     def getBestMove(self, board, depth):
         bestValue = self.alphaBeta(board, self.player, depth, math.inf, -math.inf)
         bestMoves = []
-        for move in self.getMoves(board):
+        moves = self.getMoves(board)
+
+        if not moves:
+            return
+
+        #Skips turn if no valid moves
+        for move in moves:
             newBoard = self.makeMove(board, move)
             value = self.evaluate(newBoard)
             if value == bestValue:
