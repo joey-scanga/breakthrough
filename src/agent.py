@@ -1,4 +1,5 @@
 from gamemap import Board, Player
+from openings import openingsList, setMoveDirection
 import random, math
 
 '''Interfaces'''
@@ -6,6 +7,7 @@ class IAgent:
     def __init__(self, player, depth):
         self.player = player
         self.depth = depth
+        self.movequeue = []
 
     def evaluate(self, board):
         pass
@@ -71,6 +73,8 @@ class IMinimax(IAgent):
 
 
     def getBestMove(self, board):
+        if self.movequeue:
+            return self.movequeue.pop()
         bestValue = self.minimax(board, self.player)
         moves = self.getMoves(board)
         bestMoves = []
@@ -133,6 +137,8 @@ class IAlphaBeta(IAgent):
 
 
     def getBestMove(self, board):
+        if self.movequeue:
+            return self.movequeue.pop()
         bestValue = self.alphaBeta(board, self.player, math.inf, -math.inf)
         bestMoves = []
         moves = self.getMoves(board)
@@ -173,6 +179,10 @@ class AlphaBetaAgentDefensive1(IAlphaBeta):
             return (2 * countB) + random.random()
 
 class AlphaBetaAgentOffensive2(IAlphaBeta):
+    def __init__(self, player, depth):
+        self.player = player
+        self.depth = depth
+        self.movequeue = setMoveDirection(self.player, random.choice(openingsList))
     def evaluate(self, board):
         rowScoreA = board.getPlayerARowScore()
         rowScoreB = board.getPlayerBRowScore()
@@ -184,6 +194,10 @@ class AlphaBetaAgentOffensive2(IAlphaBeta):
             return 2 * (30 - countA) + (20 * rowScoreB) - (15 * rowScoreB) + random.random()
 
 class AlphaBetaAgentDefensive2(IAlphaBeta):
+    def __init__(self, player, depth):
+        self.player = player
+        self.depth = depth
+        self.movequeue = setMoveDirection(self.player, random.choice(openingsList))
     def evaluate(self, board):
         if self.player == Player.A:
             countA = board.countPlayerB()
