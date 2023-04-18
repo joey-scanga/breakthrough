@@ -2,6 +2,8 @@
 
 ## Play a game of Breakthrough against an advanced AI agent!
 
+![example game](https://github.com/joey-scanga/breakthrough/tree/main/assets/example.gif)
+
 ### Rules:
 
 Breakthrough is a two-player abstract strategy board game that was invented by Dan Troyka in 2000. The game is played on an 8x8 square board with each player having 16 pieces in the form of checkers, which are initially placed on opposite sides of the board.
