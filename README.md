@@ -2,7 +2,7 @@
 
 ## Play a game of Breakthrough against an advanced AI agent!
 
-![example game](https://github.com/joey-scanga/breakthrough/tree/main/assets/example.gif)
+![example game](https://github.com/joey-scanga/breakthrough/blob/main/assets/example.gif)
 
 ### Rules:
 
