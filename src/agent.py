@@ -180,10 +180,10 @@ class AlphaBetaAgentOffensive2(IAlphaBeta):
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
             countB = board.countPlayerB()
-            return 2 * (30 - countB) + rowScoreA  + random.random()
+            return 2 * (30 - countB) - 2 * rowScoreA
         elif self.player == Player.B:
             countA = board.countPlayerA()
-            return 2 * (30 - countA) + rowScoreB + random.random()
+            return 2 * (30 - countA) - 2 * rowScoreB
 
 class AlphaBetaAgentDefensive2(IAlphaBeta):
     def evaluate(self, board):
@@ -191,10 +191,10 @@ class AlphaBetaAgentDefensive2(IAlphaBeta):
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
             countA = board.countPlayerB()
-            return (2 * countA) - rowScoreB + random.random()
+            return (2 * countA) - 2 * rowScoreB
         elif self.player == Player.B:
             countB = board.countPlayerA()
-            return (2 * countB) + rowScoreA + random.random()
+            return (2 * countB) - 2 * rowScoreA
     
 class AlphaBetaAgentOffensive2WithOpening(IAlphaBeta):
     def __init__(self, player, depth):
