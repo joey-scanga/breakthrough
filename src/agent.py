@@ -37,34 +37,37 @@ class IAgent:
 
 class IMinimax(IAgent):
     def minimax(self, board, player):
+        rootBoard = board
+        currentNodesExpanded = 0
         stack = [(board, self.depth, player)]
         while stack:
             board, depth, player = stack.pop()
-            if depth == 0:
-                return self.evaulate(board)
             
-            if player == self.player:
+            if player == self.player and depth > 0:
                 bestValue = -math.inf
                 for move in self.getMoves(board):
                     newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3])) 
                     stack.append((newBoard, depth-1, -1 * self.player.value))
+                    currentNodesExpanded += 1
+                    rootBoard.incrementNodesExpanded(self.player)
                     value = self.evaluate(newBoard)
                     if value > bestValue:
                         bestValue = value
                         bestMove = move
-                return bestValue
 
-            else:
+            elif player == -1 * self.player.value and depth > 0:
                 bestValue = math.inf
                 for move in self.getOpponentMoves(board):
                     newBoard = board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
                     stack.append((newBoard, depth-1, self.player.value))
+                    currentNodesExpanded += 1
+                    rootBoard.incrementNodesExpanded(self.player)
                     value = self.evaluate(newBoard)
                     if value < bestValue:
                         bestValue = value
                         bestMove = move
-                return bestValue
-
+        
+        rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
         return bestValue
 
 
@@ -95,40 +98,41 @@ class IMinimax(IAgent):
 class IAlphaBeta(IAgent):
     # Alpha-beta pruning minimax function
     def alphaBeta(self, board, player, alpha, beta):
+        rootBoard = board
+        currentNodesExpanded = 0
         stack = [(board, self.depth, alpha, beta, player)]
         bestValue = None
 
         while stack:
             board, depth, alpha, beta, player = stack.pop()
 
-            if depth == 0:
-                return evaluate(board, player)
-
-            if player == self.player:
+            if player == self.player and depth > 0:
                 bestValue = -math.inf
                 for move in self.getMoves(board):
                     newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3]))
                     stack.append((newBoard, depth-1, alpha, beta, -1 * self.player.value))
+                    currentNodesExpanded += 1
+                    rootBoard.incrementNodesExpanded(self.player)
                     value = self.evaluate(newBoard)
                     bestValue = max(bestValue, value)
                     alpha = max(alpha, value)
                     if alpha >= beta:
                         break
-            else:
+            elif player == -1 * self.player.value and depth > 0:
                 bestValue = math.inf
                 for move in self.getOpponentMoves(board):
                     newBoard = board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
                     stack.append((newBoard, depth-1, alpha, beta, self.player))
+                    currentNodesExpanded += 1
+                    rootBoard.incrementNodesExpanded(self.player)
                     value = self.evaluate(newBoard)
                     bestValue = min(bestValue, value)
                     beta = min(beta, value)
                     if alpha >= beta:
                         break
 
-            # Return best value for root level
-            if depth == 2:
-                return bestValue
-
+        
+        rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
         return bestValue
 
 

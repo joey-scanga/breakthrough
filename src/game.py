@@ -1,11 +1,9 @@
-import sys, time, pprint
+import sys, time 
 from gamemap import Board, Player
 from agent import *
 
 MINIMAX_DEPTH = 3
 ALPHA_BETA_DEPTH = 6
-
-pp = pprint.PrettyPrinter(indent=4)
 
 agents = {
         1: ["AlphaBetaOffensive1", AlphaBetaAgentOffensive1, ALPHA_BETA_DEPTH],
@@ -63,12 +61,22 @@ class GameInstance:
             if self.board.checkWin() == Player.A:
                 if display:
                     print("Player A wins!")
+                    print(f"# of moves: {self.board.moveCount}")
+                    print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
+                    print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
+                    print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
+                    print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
                     sys.exit(0)
                 else:
                     return Player.A
             elif self.board.checkWin() == Player.B:
                 if display:
                     print("Player B wins!")
+                    print(f"# of moves: {self.board.moveCount}")
+                    print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
+                    print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
+                    print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
+                    print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
                     sys.exit(0)
                 else:
                     return Player.B

@@ -1,4 +1,4 @@
-import sys, copy, pprint
+import sys, copy 
 from enum import Enum
 
 class Player(Enum):
@@ -25,6 +25,13 @@ class Board:
                 ]
         else:
             self.board = board
+        self.nodesExpandedPlayerA = 0
+        self.nodesExpandedPlayerB = 0
+        self.averageNodesExpandedPlayerA = 0
+        self.averageNodesExpandedPlayerB = 0
+        self.averageTimePlayerA = 0
+        self.averageTimePlayerB = 0
+        self.moveCount = 0
 
     def checkWin(self):
         if 'O' in self.board[0]:
@@ -33,6 +40,28 @@ class Board:
             return Player.B
         else: 
             return 0
+
+    def incrementNodesExpanded(self, player):
+        if player == Player.A:
+            self.nodesExpandedPlayerA += 1
+        else:
+            self.nodesExpandedPlayerB += 1
+
+    def updateMovingNodeAverage(self, player, nodesExpanded):
+        if player == Player.A:
+            if self.averageNodesExpandedPlayerA == 0:
+                self.averageNodesExpandedPlayerA = nodesExpanded
+            else:
+                self.averageNodesExpandedPlayerA = (self.averageNodesExpandedPlayerA + nodesExpanded) / self.moveCount
+        else:
+            if self.averageNodesExpandedPlayerB == 0:
+                self.averageNodesExpandedPlayerB = nodesExpanded
+            else:
+                self.averageNodesExpandedPlayerB = (self.averageNodesExpandedPlayerB + nodesExpanded) / self.moveCount
+
+    def incrementMoveCount(self):
+        self.moveCount += 1
+
 
     def getColumnsForPlayerA(self):
         columnScore = 0
@@ -161,7 +190,7 @@ class Board:
                 self.board[toSquare[0]][toSquare[1]] = 'O'
             elif player == Player.B:
                 self.board[toSquare[0]][toSquare[1]] = 'X'
-
+            self.incrementMoveCount()
         else:
             return False
 
