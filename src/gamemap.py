@@ -23,6 +23,18 @@ class Board:
                 ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
                 ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
                 ]
+        elif board == "Long":
+            self.board = [['X', 'X', 'X', 'X', 'X'],
+                          ['X', 'X', 'X', 'X', 'X'],
+                          ['.', '.', '.', '.', '.'],
+                          ['.', '.', '.', '.', '.'],
+                          ['.', '.', '.', '.', '.'],
+                          ['.', '.', '.', '.', '.'],
+                          ['.', '.', '.', '.', '.'],
+                          ['.', '.', '.', '.', '.'],
+                          ['O', 'O', 'O', 'O', 'O'],
+                          ['O', 'O', 'O', 'O', 'O']]
+
         else:
             self.board = board
         self.nodesExpandedPlayerA = 0
@@ -161,7 +173,7 @@ class Board:
         return score
     
     def checkValidMove(self, player, fromSquare, toSquare):
-        if -1 in fromSquare or -1 in toSquare or 8 in fromSquare or 8 in toSquare:
+        if -1 in fromSquare or -1 in toSquare or len(self.board) == fromSquare[0] or len(self.board[0]) == fromSquare[1] or len(self.board) == toSquare[0] or len(self.board[0]) == toSquare[1]:
             return False
         if player == Player.A:
             if self.board[fromSquare[0]][fromSquare[1]] != 'O':

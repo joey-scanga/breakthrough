@@ -32,7 +32,9 @@ class GameInstance:
         self.agent2 = agent2
 
     #Main loop
-    def gameloop(self, display=True, threePieces=False):
+    def gameloop(self, display=True, threePieces=False, long=False):
+        if long:
+            self.board = Board(board="Long")
         if display:
             self.board.printBoard()
         turn = Player.A
@@ -98,6 +100,6 @@ class GameInstance:
 
 
 game = GameInstance(agenta[1](Player.A, agenta[2]), agentb[1](Player.B, agentb[2]))
-game.gameloop(threePieces=True)
+game.gameloop(long=True)
 #game.manygames(100)
 
