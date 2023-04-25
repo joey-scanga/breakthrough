@@ -53,12 +53,12 @@ class Board:
             if self.averageNodesExpandedPlayerA == 0:
                 self.averageNodesExpandedPlayerA = nodesExpanded
             else:
-                self.averageNodesExpandedPlayerA = (self.averageNodesExpandedPlayerA + nodesExpanded) / self.moveCountA
+                self.averageNodesExpandedPlayerA = (self.nodesExpandedPlayerA) / self.moveCountA
         else:
             if self.averageNodesExpandedPlayerB == 0:
                 self.averageNodesExpandedPlayerB = nodesExpanded
             else:
-                self.averageNodesExpandedPlayerB = (self.averageNodesExpandedPlayerB + nodesExpanded) / self.moveCountB
+                self.averageNodesExpandedPlayerB = (self.nodesExpandedPlayerB) / self.moveCountB
 
     def incrementMoveCount(self, player):
         if player == Player.A:

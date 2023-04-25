@@ -53,7 +53,6 @@ class IMinimax(IAgent):
                     value = self.evaluate(newBoard)
                     if value > bestValue:
                         bestValue = value
-                        bestMove = move
 
             elif player == -1 * self.player.value and depth > 0:
                 bestValue = math.inf
@@ -65,7 +64,6 @@ class IMinimax(IAgent):
                     value = self.evaluate(newBoard)
                     if value < bestValue:
                         bestValue = value
-                        bestMove = move
         
         rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
         return bestValue
@@ -118,7 +116,7 @@ class IAlphaBeta(IAgent):
                     bestValue = max(bestValue, value)
                     alpha = max(alpha, value)
                     if alpha >= beta:
-                        break
+                        stack.pop()
             elif player == -1 * self.player.value and depth > 0:
                 bestValue = math.inf
                 for move in self.getOpponentMoves(board):
@@ -130,7 +128,7 @@ class IAlphaBeta(IAgent):
                     bestValue = min(bestValue, value)
                     beta = min(beta, value)
                     if alpha >= beta:
-                        break
+                        stack.pop()
 
         
         rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
