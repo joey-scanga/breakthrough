@@ -61,7 +61,7 @@ class GameInstance:
             if self.board.checkWin() == Player.A:
                 if display:
                     print("Player A wins!")
-                    print(f"# of moves: {self.board.moveCount}")
+                    print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
                     print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
                     print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
                     print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
@@ -72,7 +72,7 @@ class GameInstance:
             elif self.board.checkWin() == Player.B:
                 if display:
                     print("Player B wins!")
-                    print(f"# of moves: {self.board.moveCount}")
+                    print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
                     print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
                     print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
                     print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
