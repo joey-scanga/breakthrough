@@ -53,8 +53,11 @@ class IMinimax(IAgent):
                     value = self.evaluate(newBoard)
                     if value > bestValue:
                         bestValue = value
+                if not stack:
+                    rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
+                    return bestValue
 
-            elif player == -1 * self.player.value and depth > 0:
+            elif player != self.player and depth > 0:
                 bestValue = math.inf
                 for move in self.getOpponentMoves(board):
                     newBoard = board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
@@ -64,9 +67,10 @@ class IMinimax(IAgent):
                     value = self.evaluate(newBoard)
                     if value < bestValue:
                         bestValue = value
+                if not stack:
+                    rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
+                    return bestValue
         
-        rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
-        return bestValue
 
 
     def getBestMove(self, board):
@@ -117,7 +121,10 @@ class IAlphaBeta(IAgent):
                     alpha = max(alpha, value)
                     if alpha >= beta:
                         stack.pop()
-            elif player == -1 * self.player.value and depth > 0:
+                if not stack:
+                    rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
+                    return bestValue
+            elif player != self.player and depth > 0:
                 bestValue = math.inf
                 for move in self.getOpponentMoves(board):
                     newBoard = board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
@@ -129,10 +136,11 @@ class IAlphaBeta(IAgent):
                     beta = min(beta, value)
                     if alpha >= beta:
                         stack.pop()
+                if not stack:            
+                    rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
+                    return bestValue
 
         
-        rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
-        return bestValue
 
 
     def getBestMove(self, board):

@@ -3,7 +3,7 @@ from gamemap import Board, Player
 from agent import *
 
 MINIMAX_DEPTH = 3
-ALPHA_BETA_DEPTH = 6
+ALPHA_BETA_DEPTH = 10
 
 agents = {
         1: ["AlphaBetaOffensive1", AlphaBetaAgentOffensive1, ALPHA_BETA_DEPTH],
@@ -100,6 +100,6 @@ class GameInstance:
 
 
 game = GameInstance(agenta[1](Player.A, agenta[2]), agentb[1](Player.B, agentb[2]))
-#game.gameloop()
-game.manygames(100)
+game.gameloop()
+#game.manygames(100)
 
