@@ -100,6 +100,6 @@ class GameInstance:
 
 
 game = GameInstance(agenta[1](Player.A, agenta[2]), agentb[1](Player.B, agentb[2]))
-game.gameloop(long=True)
+game.gameloop()
 #game.manygames(100)
 
