@@ -160,7 +160,7 @@ class Board:
                 return False
             if self.board[toSquare[0]][toSquare[1]] == 'O':
                 return False
-            if self.board[toSquare[0]][toSquare[1]] == 'X' and abs(fromSquare[1] - toSquare[1]) != 1:
+            if self.board[toSquare[0]][toSquare[1]] == 'X' and abs(fromSquare[1] - toSquare[1]) == 0:
                 return False 
             if fromSquare[0] - toSquare[0] != 1:
                 return False
@@ -172,7 +172,7 @@ class Board:
                 return False
             if self.board[toSquare[0]][toSquare[1]] == 'X':
                 return False
-            if self.board[toSquare[0]][toSquare[1]] == '0' and abs(fromSquare[1] - toSquare[1]) != 1:
+            if self.board[toSquare[0]][toSquare[1]] == '0' and abs(fromSquare[1] - toSquare[1]) == 0:
                 return False 
             if toSquare[0] - fromSquare[0] != 1:
                 return False

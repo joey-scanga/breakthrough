@@ -3,7 +3,7 @@ from gamemap import Board, Player
 from agent import *
 
 MINIMAX_DEPTH = 3
-ALPHA_BETA_DEPTH = 10
+ALPHA_BETA_DEPTH = 3
 
 agents = {
         1: ["AlphaBetaOffensive1", AlphaBetaAgentOffensive1, ALPHA_BETA_DEPTH],
@@ -46,7 +46,7 @@ class GameInstance:
                 turn = Player.B
                 if display:
                     self.board.printBoard()
-                    time.sleep(0.1)
+                    time.sleep(0.3)
             elif turn == self.agent2.player:
                 move = self.agent2.getBestMove(self.board)
                 if move:
@@ -56,7 +56,7 @@ class GameInstance:
                 turn = Player.A
                 if display:
                     self.board.printBoard()
-                    time.sleep(0.1)
+                    time.sleep(0.3)
             
             if self.board.checkWin() == Player.A:
                 if display:

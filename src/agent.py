@@ -54,6 +54,7 @@ class IMinimax(IAgent):
                     if value > bestValue:
                         bestValue = value
                 if not stack:
+                    print(currentNodesExpanded)
                     rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
                     return bestValue
 
@@ -170,6 +171,10 @@ class IAlphaBeta(IAgent):
 '''Agents'''
 class AlphaBetaAgentOffensive1(IAlphaBeta):
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         if self.player == Player.A:
             countB = board.countPlayerB()
             return 2 * (30 - countB) + random.random()
@@ -179,6 +184,10 @@ class AlphaBetaAgentOffensive1(IAlphaBeta):
 
 class AlphaBetaAgentDefensive1(IAlphaBeta):
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         if self.player == Player.A:
             countA = board.countPlayerA()
             return (2 * countA) + random.random()
@@ -188,6 +197,10 @@ class AlphaBetaAgentDefensive1(IAlphaBeta):
 
 class AlphaBetaAgentOffensive2(IAlphaBeta):
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         rowScoreA = board.getPlayerARowScore()
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
@@ -199,6 +212,10 @@ class AlphaBetaAgentOffensive2(IAlphaBeta):
 
 class AlphaBetaAgentDefensive2(IAlphaBeta):
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         rowScoreA = board.getPlayerARowScore()
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
@@ -214,6 +231,10 @@ class AlphaBetaAgentOffensive2WithOpening(IAlphaBeta):
         self.depth = depth
         self.movequeue = setMoveDirection(self.player, random.choice(openingsList))
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         rowScoreA = board.getPlayerARowScore()
         rowScoreB = board.getPlayerBRowScore()
         if self.player == Player.A:
@@ -229,6 +250,10 @@ class AlphaBetaAgentDefensive2WithOpening(IAlphaBeta):
         self.depth = depth
         self.movequeue = setMoveDirection(self.player, random.choice(openingsList))
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         if self.player == Player.A:
             countA = board.countPlayerB()
             rowScoreA = board.getPlayerARowScore()
@@ -240,6 +265,10 @@ class AlphaBetaAgentDefensive2WithOpening(IAlphaBeta):
 
 class MinimaxAgentOffensive1(IMinimax):
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         if self.player == Player.A:
             countB = board.countPlayerB()
             return 2 * (30 - countB) + random.random()
@@ -249,6 +278,10 @@ class MinimaxAgentOffensive1(IMinimax):
             
 class MinimaxAgentDefensive1(IMinimax):
     def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
         if self.player == Player.A:
             countA = board.countPlayerA()
             return (2 * countA) + random.random()
