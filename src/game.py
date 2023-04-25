@@ -3,7 +3,7 @@ from gamemap import Board, Player
 from agent import *
 
 MINIMAX_DEPTH = 3
-ALPHA_BETA_DEPTH = 3
+ALPHA_BETA_DEPTH = 6
 
 agents = {
         1: ["AlphaBetaOffensive1", AlphaBetaAgentOffensive1, ALPHA_BETA_DEPTH],
@@ -32,11 +32,11 @@ class GameInstance:
         self.agent2 = agent2
 
     #Main loop
-    def gameloop(self, display=True):
+    def gameloop(self, display=True, threePieces=False):
         if display:
             self.board.printBoard()
         turn = Player.A
-        while self.board.checkWin() == 0:
+        while self.board.checkWin(threePieces=threePieces) == 0:
             if turn == self.agent1.player:
                 move = self.agent1.getBestMove(self.board)
                 if move:
@@ -46,7 +46,7 @@ class GameInstance:
                 turn = Player.B
                 if display:
                     self.board.printBoard()
-                    time.sleep(0.3)
+                    time.sleep(0.1)
             elif turn == self.agent2.player:
                 move = self.agent2.getBestMove(self.board)
                 if move:
@@ -56,9 +56,9 @@ class GameInstance:
                 turn = Player.A
                 if display:
                     self.board.printBoard()
-                    time.sleep(0.3)
+                    time.sleep(0.1)
             
-            if self.board.checkWin() == Player.A:
+            if self.board.checkWin(threePieces=threePieces) == Player.A:
                 if display:
                     print("Player A wins!")
                     print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
@@ -69,7 +69,7 @@ class GameInstance:
                     sys.exit(0)
                 else:
                     return Player.A
-            elif self.board.checkWin() == Player.B:
+            elif self.board.checkWin(threePieces=threePieces) == Player.B:
                 if display:
                     print("Player B wins!")
                     print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
@@ -81,9 +81,7 @@ class GameInstance:
                 else:
                     return Player.B
 
-            #breakpoint()
 
-            
     #Simulate a number of games
     def manygames(self, gameno):
         awins = 0
@@ -100,6 +98,6 @@ class GameInstance:
 
 
 game = GameInstance(agenta[1](Player.A, agenta[2]), agentb[1](Player.B, agentb[2]))
-game.gameloop()
+game.gameloop(threePieces=True)
 #game.manygames(100)
 

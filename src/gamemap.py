@@ -34,7 +34,15 @@ class Board:
         self.moveCountA = 0
         self.moveCountB = 0
 
-    def checkWin(self):
+    def checkWin(self, threePieces=False):
+        if threePieces:
+            if self.board[0].count('O') >= 3:
+                return Player.A
+            elif self.board[-1].count('X') >= 3:
+                return Player.B
+            else:
+                return 0
+
         if 'O' in self.board[0]:
             return Player.A
         elif 'X' in self.board[-1]:
