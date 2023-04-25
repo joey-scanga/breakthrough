@@ -31,7 +31,8 @@ class Board:
         self.averageNodesExpandedPlayerB = 0
         self.averageTimePlayerA = 0
         self.averageTimePlayerB = 0
-        self.moveCount = 0
+        self.moveCountA = 0
+        self.moveCountB = 0
 
     def checkWin(self):
         if 'O' in self.board[0]:
@@ -52,15 +53,18 @@ class Board:
             if self.averageNodesExpandedPlayerA == 0:
                 self.averageNodesExpandedPlayerA = nodesExpanded
             else:
-                self.averageNodesExpandedPlayerA = (self.averageNodesExpandedPlayerA + nodesExpanded) / self.moveCount
+                self.averageNodesExpandedPlayerA = (self.averageNodesExpandedPlayerA + nodesExpanded) / self.moveCountA
         else:
             if self.averageNodesExpandedPlayerB == 0:
                 self.averageNodesExpandedPlayerB = nodesExpanded
             else:
-                self.averageNodesExpandedPlayerB = (self.averageNodesExpandedPlayerB + nodesExpanded) / self.moveCount
+                self.averageNodesExpandedPlayerB = (self.averageNodesExpandedPlayerB + nodesExpanded) / self.moveCountB
 
-    def incrementMoveCount(self):
-        self.moveCount += 1
+    def incrementMoveCount(self, player):
+        if player == Player.A:
+            self.moveCountA += 1
+        else:
+            self.moveCountB += 1
 
 
     def getColumnsForPlayerA(self):
@@ -190,7 +194,6 @@ class Board:
                 self.board[toSquare[0]][toSquare[1]] = 'O'
             elif player == Player.B:
                 self.board[toSquare[0]][toSquare[1]] = 'X'
-            self.incrementMoveCount()
         else:
             return False
 

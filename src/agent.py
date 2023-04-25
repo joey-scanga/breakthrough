@@ -72,6 +72,7 @@ class IMinimax(IAgent):
 
 
     def getBestMove(self, board):
+        board.incrementMoveCount(self.player)
         if self.movequeue:
             return self.movequeue.pop()
         bestValue = self.minimax(board, self.player)
@@ -137,6 +138,7 @@ class IAlphaBeta(IAgent):
 
 
     def getBestMove(self, board):
+        board.incrementMoveCount(self.player)
         if self.movequeue:
             return self.movequeue.pop()
         bestValue = self.alphaBeta(board, self.player, math.inf, -math.inf)
