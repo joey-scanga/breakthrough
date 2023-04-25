@@ -88,7 +88,6 @@ class GameInstance:
     def manygames(self, gameno):
         awins = 0
         bwins = 0
-        stalemates = 0
         for i in range(gameno):
             win = self.gameloop(display=False)
             if win == Player.A:
@@ -98,10 +97,9 @@ class GameInstance:
             self.board = Board()
         print(f"A wins: {awins}")
         print(f"B wins: {bwins}")
-        print(f"Stalemates: {stalemates}")
 
 
 game = GameInstance(agenta[1](Player.A, agenta[2]), agentb[1](Player.B, agentb[2]))
-game.gameloop()
-#game.manygames(100)
+#game.gameloop()
+game.manygames(100)
 
