@@ -70,26 +70,30 @@ class GameInstance:
             if self.board.checkWin(threePieces=threePieces) == Player.A:
                 if display:
                     print("Player A wins!")
-                    print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
                     print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
                     print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
                     print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
                     print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
                     print(f"Average time per turn player A: {round(avgTimeAgentA, 6)} seconds")
                     print(f"Average time per turn player B: {round(avgTimeAgentB, 6)} seconds")
+                    print(f"Pieces taken by player A: {self.board.initialPiecesPlayerB - self.board.countPlayerB()}")
+                    print(f"Pieces taken by player B: {self.board.initialPiecesPlayerA - self.board.countPlayerA()}")
+                    print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
                     sys.exit(0)
                 else:
                     return Player.A
             elif self.board.checkWin(threePieces=threePieces) == Player.B:
                 if display:
                     print("Player B wins!")
-                    print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
                     print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
                     print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
                     print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
                     print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
                     print(f"Average time per turn player A: {round(avgTimeAgentA, 6)} seconds")
                     print(f"Average time per turn player B: {round(avgTimeAgentB, 6)} seconds")
+                    print(f"Pieces taken by player A: {self.board.initialPiecesPlayerB - self.board.countPlayerB()}")
+                    print(f"Pieces taken by player B: {self.board.initialPiecesPlayerA - self.board.countPlayerA()}")
+                    print(f"# of moves: {self.board.moveCountA + self.board.moveCountB}")
                     sys.exit(0)
                 else:
                     return Player.B

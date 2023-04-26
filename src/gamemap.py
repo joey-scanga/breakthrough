@@ -37,6 +37,9 @@ class Board:
 
         else:
             self.board = board
+
+        self.initialPiecesPlayerA = self.countPlayerA()
+        self.initialPiecesPlayerB = self.countPlayerB()
         self.nodesExpandedPlayerA = 0
         self.nodesExpandedPlayerB = 0
         self.averageNodesExpandedPlayerA = 0
