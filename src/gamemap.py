@@ -1,7 +1,7 @@
 import sys, copy 
-from enum import Enum
+from enum import IntEnum
 
-class Player(Enum):
+class Player(IntEnum):
     A = 1
     B = -1
 

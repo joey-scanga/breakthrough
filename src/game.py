@@ -2,6 +2,8 @@ import sys, time
 from gamemap import Board, Player
 from agent import *
 
+sys.setrecursionlimit(120000)
+
 MINIMAX_DEPTH = 3
 ALPHA_BETA_DEPTH = 6
 

@@ -38,43 +38,27 @@ class IAgent:
         return board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
 
 class IMinimax(IAgent):
-    def minimax(self, board, player):
-        if not self.rootBoard:
-            self.rootBoard = board
-        self.currentNodesExpanded = 0
-        stack = [(board, self.depth, player)]
-        while stack:
-            board, depth, player = stack.pop()
-            
-            if player == self.player and depth > 0:
-                bestValue = -math.inf
-                for move in self.getMoves(board):
-                    newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3])) 
-                    stack.append((newBoard, depth-1, -1 * self.player.value))
-                    self.currentNodesExpanded += 1
-                    self.rootBoard.incrementNodesExpanded(self.player)
-                    value = self.evaluate(newBoard)
-                    if value > bestValue:
-                        bestValue = value
-                if not stack:
-                    self.rootBoard.updateMovingNodeAverage(self.player, self.currentNodesExpanded)
-                    return bestValue
 
-            elif player != self.player and depth > 0:
-                bestValue = math.inf
-                for move in self.getOpponentMoves(board):
-                    newBoard = board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
-                    stack.append((newBoard, depth-1, self.player.value))
-                    self.currentNodesExpanded += 1
-                    self.rootBoard.incrementNodesExpanded(self.player)
-                    value = self.evaluate(newBoard)
-                    if value < bestValue:
-                        bestValue = value
-                if not stack:
-                    self.rootBoard.updateMovingNodeAverage(self.player, currentNodesExpanded)
-                    return bestValue
-        
+    def minimax(self, depth, board, player):
+        if depth == 0:
+            return self.evaluate(board)
 
+        if player == self.player:
+            bestValue = -math.inf
+            for move in self.getMoves(board):
+                newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3])) 
+                self.currentNodesExpanded += 1
+                value = self.minimax(depth-1, newBoard, -1 * self.player)
+                bestValue = max(bestValue, value)
+            return bestValue
+
+        else:
+            bestValue = math.inf
+            for move in self.getOpponentMoves(board):
+                newBoard = board.testMoveReturningBoard(-1 * self.player, (move[0], move[1]), (move[2], move[3]))
+                value = self.minimax(depth-1, newBoard, self.player)
+                bestValue = min(bestValue, value)
+            return bestValue
 
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
@@ -82,7 +66,9 @@ class IMinimax(IAgent):
         if self.movequeue:
             endTime = time.time()
             return (self.movequeue.pop(), endTime - startTime)
-        bestValue = self.minimax(board, self.player)
+        depth = self.depth
+        player = self.player
+        bestValue = self.minimax(depth, board, self.player)
         moves = self.getMoves(board)
         bestMoves = []
 
@@ -90,14 +76,13 @@ class IMinimax(IAgent):
         if not moves:
             endTime = time.time()
             return (None, (endTime - startTime))
-
+        
         for move in moves:
             newBoard = self.makeMove(board, move)
-            value = self.evaluate(newBoard)
+            value = self.minimax(depth-1, newBoard, -player)
             if value == bestValue:
                 bestMoves.append(move)
 
-       
         if not bestMoves:
             endTime = time.time()
             return (random.choice(self.getMoves(board)), (endTime - startTime))
@@ -108,49 +93,33 @@ class IMinimax(IAgent):
 
 class IAlphaBeta(IAgent):
     # Alpha-beta pruning minimax function
-    def alphaBeta(self, board, player, alpha, beta):
-        if not self.rootBoard:
-            self.rootBoard = board
-        self.currentNodesExpanded = 0
-        stack = [(board, self.depth, alpha, beta, player)]
-        bestValue = None
 
-        while stack:
-            board, depth, alpha, beta, player = stack.pop()
+    def alphaBeta(self, board, player, depth, alpha, beta):
+        if depth == 0:
+            return self.evaluate(board)
 
-            if player == self.player and depth > 0:
-                bestValue = -math.inf
-                for move in self.getMoves(board):
-                    newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3]))
-                    stack.append((newBoard, depth-1, alpha, beta, -1 * self.player.value))
-                    self.currentNodesExpanded += 1
-                    self.rootBoard.incrementNodesExpanded(self.player)
-                    value = self.evaluate(newBoard)
-                    bestValue = max(bestValue, value)
-                    alpha = max(alpha, value)
-                    if alpha >= beta:
-                        stack.pop()
-                if not stack:
-                    self.rootBoard.updateMovingNodeAverage(self.player, self.currentNodesExpanded)
-                    return bestValue
-            elif player != self.player and depth > 0:
-                bestValue = math.inf
-                for move in self.getOpponentMoves(board):
-                    newBoard = board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
-                    stack.append((newBoard, depth-1, alpha, beta, self.player))
-                    self.currentNodesExpanded += 1
-                    self.rootBoard.incrementNodesExpanded(self.player)
-                    value = self.evaluate(newBoard)
-                    bestValue = min(bestValue, value)
-                    beta = min(beta, value)
-                    if alpha >= beta:
-                        stack.pop()
-                if not stack:            
-                    self.rootBoard.updateMovingNodeAverage(self.player, self.currentNodesExpanded)
-                    return bestValue
+        if player == self.player:
+            bestValue = -math.inf
+            for move in self.getMoves(board):
+                newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3]))
+                self.currentNodesExpanded += 1
+                value = self.alphaBeta(newBoard, -self.player, depth-1, alpha, beta)
+                bestValue = max(value, bestValue)
+                alpha = max(alpha, value)
+                if alpha >= beta:
+                    break
+            return bestValue
 
-        
-
+        else:
+            bestValue = math.inf
+            for move in self.getOpponentMoves(board):
+                newBoard = board.testMoveReturningBoard(-self.player, (move[0], move[1]), (move[2], move[3]))
+                value = self.alphaBeta(newBoard, self.player, depth-1, alpha, beta)
+                bestValue = min(value, bestValue)
+                beta = min(beta, value)
+                if alpha >= beta:
+                    break
+            return bestValue
 
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
@@ -158,7 +127,11 @@ class IAlphaBeta(IAgent):
         if self.movequeue:
             endTime = time.time()
             return (self.movequeue.pop(), endTime - startTime)
-        bestValue = self.alphaBeta(board, self.player, math.inf, -math.inf)
+        player = self.player
+        depth = self.depth
+        alpha = math.inf
+        beta = -math.inf
+        bestValue = self.alphaBeta(board, player, depth, alpha, beta)
         bestMoves = []
         moves = self.getMoves(board)
 
@@ -169,7 +142,7 @@ class IAlphaBeta(IAgent):
         #Skips turn if no valid moves
         for move in moves:
             newBoard = self.makeMove(board, move)
-            value = self.evaluate(newBoard)
+            value = self.alphaBeta(newBoard, -player, depth-1, alpha, beta)
             if value == bestValue:
                 bestMoves.append(move)
        
@@ -186,7 +159,7 @@ class AlphaBetaAgentOffensive1(IAlphaBeta):
     def evaluate(self, board):
         if board.checkWin() == self.player:
             return math.inf
-        elif board.checkWin() != 0:
+        elif board.checkWin() == 0:
             return -math.inf
         if self.player == Player.A:
             countB = board.countPlayerB()
