@@ -25,36 +25,43 @@ for key in agents.keys():
     print(f"{key}: {agents[key][0]}")
 agentb = agents[int(input())]
 
+def updateAverageTime(avgTime, newTime, moveCount):
+    return ((avgTime + newTime) / moveCount)
+
 class GameInstance:
-    def __init__(self, agent1, agent2):
+    def __init__(self, agentA, agentB):
         self.board = Board()
-        self.agent1 = agent1
-        self.agent2 = agent2
+        self.agentA = agentA
+        self.agentB = agentB
 
     #Main loop
     def gameloop(self, display=True, threePieces=False, long=False):
+        avgTimeAgentA = 0
+        avgTimeAgentB = 0
         if long:
             self.board = Board(board="Long")
         if display:
             self.board.printBoard()
         turn = Player.A
         while self.board.checkWin(threePieces=threePieces) == 0:
-            if turn == self.agent1.player:
-                move = self.agent1.getBestMove(self.board)
+            if turn == self.agentA.player:
+                move, timeA = self.agentA.getBestMove(self.board)
                 if move:
-                    self.board.movePiece(self.agent1.player, (move[0], move[1]), (move[2], move[3]))
+                    self.board.movePiece(self.agentA.player, (move[0], move[1]), (move[2], move[3]))
                 else:
                     print("Player A skips!")
+                avgTimeAgentA = updateAverageTime(avgTimeAgentA, timeA, self.board.moveCountA)
                 turn = Player.B
                 if display:
                     self.board.printBoard()
                     time.sleep(0.1)
-            elif turn == self.agent2.player:
-                move = self.agent2.getBestMove(self.board)
+            elif turn == self.agentB.player:
+                move, timeB = self.agentB.getBestMove(self.board)
                 if move:
-                    self.board.movePiece(self.agent2.player, (move[0], move[1]), (move[2], move[3]))
+                    self.board.movePiece(self.agentB.player, (move[0], move[1]), (move[2], move[3]))
                 else:
                     print("Player B skips!")
+                avgTimeAgentB = updateAverageTime(avgTimeAgentB, timeB, self.board.moveCountB)
                 turn = Player.A
                 if display:
                     self.board.printBoard()
@@ -68,6 +75,8 @@ class GameInstance:
                     print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
                     print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
                     print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
+                    print(f"Average time per turn player A: {round(avgTimeAgentA, 6)} seconds")
+                    print(f"Average time per turn player B: {round(avgTimeAgentB, 6)} seconds")
                     sys.exit(0)
                 else:
                     return Player.A
@@ -79,6 +88,8 @@ class GameInstance:
                     print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
                     print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
                     print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
+                    print(f"Average time per turn player A: {round(avgTimeAgentA, 6)} seconds")
+                    print(f"Average time per turn player B: {round(avgTimeAgentB, 6)} seconds")
                     sys.exit(0)
                 else:
                     return Player.B

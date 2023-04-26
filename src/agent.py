@@ -1,6 +1,6 @@
 from gamemap import Board, Player
 from openings import openingsList, setMoveDirection
-import random, math
+import random, math, time
 
 '''Interfaces'''
 class IAgent:
@@ -76,15 +76,18 @@ class IMinimax(IAgent):
 
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
+        startTime = time.time()
         if self.movequeue:
-            return self.movequeue.pop()
+            endTime = time.time()
+            return (self.movequeue.pop(), endTime - startTime)
         bestValue = self.minimax(board, self.player)
         moves = self.getMoves(board)
         bestMoves = []
 
         #Skips turn if no valid moves
         if not moves:
-            return
+            endTime = time.time()
+            return (None, (endTime - startTime))
 
         for move in moves:
             newBoard = self.makeMove(board, move)
@@ -94,10 +97,12 @@ class IMinimax(IAgent):
 
        
         if not bestMoves:
-            return random.choice(self.getMoves(board))
+            endTime = time.time()
+            return (random.choice(self.getMoves(board)), (endTime - startTime))
 
         bestMove = random.choice(bestMoves)
-        return bestMove
+        endTime = time.time()
+        return (bestMove, endTime - startTime)
 
 class IAlphaBeta(IAgent):
     # Alpha-beta pruning minimax function
@@ -146,14 +151,17 @@ class IAlphaBeta(IAgent):
 
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
+        startTime = time.time()
         if self.movequeue:
-            return self.movequeue.pop()
+            endTime = time.time()
+            return (self.movequeue.pop(), endTime - startTime)
         bestValue = self.alphaBeta(board, self.player, math.inf, -math.inf)
         bestMoves = []
         moves = self.getMoves(board)
 
         if not moves:
-            return
+            endTime = time.time()
+            return (None, endTime - startTime)
 
         #Skips turn if no valid moves
         for move in moves:
@@ -163,10 +171,12 @@ class IAlphaBeta(IAgent):
                 bestMoves.append(move)
        
         if not bestMoves:
-            return random.choice(self.getMoves(board))
+            endTime = time.time()
+            return (random.choice(self.getMoves(board)), endTime - startTime)
 
         bestMove = random.choice(bestMoves)
-        return bestMove
+        endTime = time.time()
+        return (bestMove, endTime - startTime)
 
 '''Agents'''
 class AlphaBetaAgentOffensive1(IAlphaBeta):
