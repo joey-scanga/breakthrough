@@ -15,7 +15,8 @@ agents = {
         5: ["MinimaxOffensive1", MinimaxAgentOffensive1, MINIMAX_DEPTH],
         6: ["MinimaxDefensive1", MinimaxAgentDefensive1, MINIMAX_DEPTH],
         7: ["AlphaBetaOffensive2WithOpening", AlphaBetaAgentOffensive2WithOpening, ALPHA_BETA_DEPTH],
-        8: ["AlphaBetaDefensive2WithOpening", AlphaBetaAgentDefensive2WithOpening, ALPHA_BETA_DEPTH]
+        8: ["AlphaBetaDefensive2WithOpening", AlphaBetaAgentDefensive2WithOpening, ALPHA_BETA_DEPTH],
+        9: ["GreedyOffensive2", GreedyAgentOffensive2, 1]
         }
 
 print("Choose agent A: ")

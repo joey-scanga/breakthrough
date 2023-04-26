@@ -15,7 +15,7 @@ class IAgent:
     def evaluate(self, board):
         pass
 
-    def getBestMove(self, board, depth):
+    def getBestMove(self, board, depth=1):
         pass
 
     def getMoves(self, board):
@@ -37,6 +37,26 @@ class IAgent:
 
     def makeOpponentMove(self, board, move):
         return board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
+
+class IGreedy(IAgent):
+    def getBestMove(self, board):
+        board.incrementMoveCount(self.player)
+        startTime = time.time()
+        bestValue = -math.inf
+        bestMove = None
+        for move in self.getMoves(board):
+            self.nodesExpanded += 1
+            newBoard = self.makeMove(board, move) 
+            if self.evaluate(newBoard) > bestValue:
+                bestValue = self.evaluate(newBoard)
+                bestMove = move
+            bestValue = max(self.evaluate(newBoard), bestValue)
+        endTime = time.time()
+        if self.player == Player.A:
+            self.averageNodesExpanded = self.nodesExpanded / board.moveCountA
+        else:
+            self.averageNodesExpanded = self.nodesExpanded / board.moveCountB
+        return (bestMove, endTime - startTime)
 
 class IMinimax(IAgent):
 
@@ -193,6 +213,21 @@ class AlphaBetaAgentDefensive1(IAlphaBeta):
         elif self.player == Player.B:
             countB = board.countPlayerB()
             return (2 * countB) + random.random()
+
+class GreedyAgentOffensive2(IGreedy):
+    def evaluate(self, board):
+        if board.checkWin() == self.player:
+            return math.inf
+        elif board.checkWin() != 0:
+            return -math.inf
+        rowScoreA = board.getPlayerARowScore()
+        rowScoreB = board.getPlayerBRowScore()
+        if self.player == Player.A:
+            countB = board.countPlayerB()
+            return 2 * (30 - countB) - 2 * rowScoreA
+        elif self.player == Player.B:
+            countA = board.countPlayerA()
+            return 2 * (30 - countA) - 2 * rowScoreB
 
 class AlphaBetaAgentOffensive2(IAlphaBeta):
     def evaluate(self, board):
