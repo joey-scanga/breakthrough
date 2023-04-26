@@ -7,8 +7,7 @@ class IAgent:
     def __init__(self, player, depth):
         self.player = player
         self.depth = depth
-        self.movequeue = []
-        self.rootBoard = None
+        self.movequeue = [] #Only for agents with opening strategies
         self.nodesExpanded = 0
         self.averageNodesExpanded = 0
     
