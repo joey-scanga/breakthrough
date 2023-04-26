@@ -5,7 +5,7 @@ from agent import *
 sys.setrecursionlimit(120000)
 
 MINIMAX_DEPTH = 3
-ALPHA_BETA_DEPTH = 6
+ALPHA_BETA_DEPTH = 10
 
 agents = {
         1: ["AlphaBetaOffensive1", AlphaBetaAgentOffensive1, ALPHA_BETA_DEPTH],
@@ -72,10 +72,10 @@ class GameInstance:
             if self.board.checkWin(threePieces=threePieces) == Player.A:
                 if display:
                     print("Player A wins!")
-                    print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
-                    print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
-                    print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
-                    print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
+                    print(f"Player A nodes expanded: {self.agentA.nodesExpanded}")
+                    print(f"Average nodes expanded player A: {self.agentA.averageNodesExpanded}")
+                    print(f"Player B nodes expanded: {self.agentB.nodesExpanded}")
+                    print(f"Average nodes expanded player B: {self.agentB.averageNodesExpanded}")
                     print(f"Average time per turn player A: {round(avgTimeAgentA, 6)} seconds")
                     print(f"Average time per turn player B: {round(avgTimeAgentB, 6)} seconds")
                     print(f"Pieces taken by player A: {self.board.initialPiecesPlayerB - self.board.countPlayerB()}")
@@ -87,10 +87,10 @@ class GameInstance:
             elif self.board.checkWin(threePieces=threePieces) == Player.B:
                 if display:
                     print("Player B wins!")
-                    print(f"Player A nodes expanded: {self.board.nodesExpandedPlayerA}")
-                    print(f"Average nodes expanded player A: {self.board.averageNodesExpandedPlayerA}")
-                    print(f"Player B nodes expanded: {self.board.nodesExpandedPlayerB}")
-                    print(f"Average nodes expanded player B: {self.board.averageNodesExpandedPlayerB}")
+                    print(f"Player A nodes expanded: {self.agentA.nodesExpanded}")
+                    print(f"Average nodes expanded player A: {self.agentA.averageNodesExpanded}")
+                    print(f"Player B nodes expanded: {self.agentB.nodesExpanded}")
+                    print(f"Average nodes expanded player B: {self.agentB.averageNodesExpanded}")
                     print(f"Average time per turn player A: {round(avgTimeAgentA, 6)} seconds")
                     print(f"Average time per turn player B: {round(avgTimeAgentB, 6)} seconds")
                     print(f"Pieces taken by player A: {self.board.initialPiecesPlayerB - self.board.countPlayerB()}")

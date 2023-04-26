@@ -9,7 +9,8 @@ class IAgent:
         self.depth = depth
         self.movequeue = []
         self.rootBoard = None
-        self.currentNodesExpanded = 0
+        self.nodesExpanded = 0
+        self.averageNodesExpanded = 0
 
     def evaluate(self, board):
         pass
@@ -47,7 +48,7 @@ class IMinimax(IAgent):
             bestValue = -math.inf
             for move in self.getMoves(board):
                 newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3])) 
-                self.currentNodesExpanded += 1
+                self.nodesExpanded += 1
                 value = self.minimax(depth-1, newBoard, -1 * self.player)
                 bestValue = max(bestValue, value)
             return bestValue
@@ -56,6 +57,7 @@ class IMinimax(IAgent):
             bestValue = math.inf
             for move in self.getOpponentMoves(board):
                 newBoard = board.testMoveReturningBoard(-1 * self.player, (move[0], move[1]), (move[2], move[3]))
+                self.nodesExpanded += 1
                 value = self.minimax(depth-1, newBoard, self.player)
                 bestValue = min(bestValue, value)
             return bestValue
@@ -83,10 +85,15 @@ class IMinimax(IAgent):
             if value == bestValue:
                 bestMoves.append(move)
 
+        if self.player == Player.A:
+            self.averageNodesExpanded = self.nodesExpanded / board.moveCountA
+        else:
+            self.averageNodesExpanded = self.nodesExpanded / board.moveCountB
+
         if not bestMoves:
             endTime = time.time()
             return (random.choice(self.getMoves(board)), (endTime - startTime))
-
+       
         bestMove = random.choice(bestMoves)
         endTime = time.time()
         return (bestMove, endTime - startTime)
@@ -102,7 +109,7 @@ class IAlphaBeta(IAgent):
             bestValue = -math.inf
             for move in self.getMoves(board):
                 newBoard = board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3]))
-                self.currentNodesExpanded += 1
+                self.nodesExpanded += 1
                 value = self.alphaBeta(newBoard, -self.player, depth-1, alpha, beta)
                 bestValue = max(value, bestValue)
                 alpha = max(alpha, value)
@@ -114,6 +121,7 @@ class IAlphaBeta(IAgent):
             bestValue = math.inf
             for move in self.getOpponentMoves(board):
                 newBoard = board.testMoveReturningBoard(-self.player, (move[0], move[1]), (move[2], move[3]))
+                self.nodesExpanded += 1
                 value = self.alphaBeta(newBoard, self.player, depth-1, alpha, beta)
                 bestValue = min(value, bestValue)
                 beta = min(beta, value)
@@ -145,7 +153,12 @@ class IAlphaBeta(IAgent):
             value = self.alphaBeta(newBoard, -player, depth-1, alpha, beta)
             if value == bestValue:
                 bestMoves.append(move)
-       
+
+        if self.player == Player.A:
+            self.averageNodesExpanded = self.nodesExpanded / board.moveCountA
+        else:
+            self.averageNodesExpanded = self.nodesExpanded / board.moveCountB
+
         if not bestMoves:
             endTime = time.time()
             return (random.choice(self.getMoves(board)), endTime - startTime)
