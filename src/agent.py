@@ -11,13 +11,17 @@ class IAgent:
         self.rootBoard = None
         self.nodesExpanded = 0
         self.averageNodesExpanded = 0
-
+    
+    #Evaluation function to be implemented by class children
     def evaluate(self, board):
         pass
 
+    #Returns the best move found by minimax, alpha-beta pruning, or greedy search. Implemented
+    #by class children.
     def getBestMove(self, board, depth=1):
         pass
-
+    
+    #Returns all possible moves for this player given a board state. 
     def getMoves(self, board):
         if self.player == Player.A:
             moves = board.getMovesForPlayerA()
@@ -25,6 +29,7 @@ class IAgent:
             moves = board.getMovesForPlayerB()
         return moves
 
+    #Returns all possible opponent moves given a board state. 
     def getOpponentMoves(self, board):
         if self.player == Player.A:
             moves = board.getMovesForPlayerB()
@@ -32,13 +37,17 @@ class IAgent:
             moves = board.getMovesForPlayerA()
         return moves
 
+    #Theoretically makes a move from one square to another, returning the new board state.
     def makeMove(self, board, move):
         return board.testMoveReturningBoard(self.player, (move[0], move[1]), (move[2], move[3]))
 
+    #Similar to makeMove() but moves an opponent piece.
     def makeOpponentMove(self, board, move):
         return board.testMoveReturningBoard(-1 * self.player.value, (move[0], move[1]), (move[2], move[3]))
 
 class IGreedy(IAgent):
+    #Will evaluate all moves at a depth of 1, evaluate them, and return the move with the highest
+    #eval score. Keeps track of nodes expanded, time to make the move, and average nodes expanded.
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
         startTime = time.time()
@@ -59,7 +68,8 @@ class IGreedy(IAgent):
         return (bestMove, endTime - startTime)
 
 class IMinimax(IAgent):
-
+    #Finds the best move choice according to an eval function at a given depth (default is 3). 
+    #Keeps track of nodes expanded.
     def minimax(self, depth, board, player):
         if depth == 0:
             return self.evaluate(board)
@@ -82,6 +92,9 @@ class IMinimax(IAgent):
                 bestValue = min(bestValue, value)
             return bestValue
 
+    #Uses above minimax function to determine the best move choice at the current board state, 
+    #given an eval function. Keeps track of time to make move and average number of nodes 
+    #expanded.
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
         startTime = time.time()
@@ -119,8 +132,7 @@ class IMinimax(IAgent):
         return (bestMove, endTime - startTime)
 
 class IAlphaBeta(IAgent):
-    # Alpha-beta pruning minimax function
-
+    # Alpha-beta pruning minimax function, similar to minimax but includes pruning.
     def alphaBeta(self, board, player, depth, alpha, beta):
         if depth == 0:
             return self.evaluate(board)
@@ -149,6 +161,7 @@ class IAlphaBeta(IAgent):
                     break
             return bestValue
 
+    #Same as minimax getBestMove but uses alphaBeta()
     def getBestMove(self, board):
         board.incrementMoveCount(self.player)
         startTime = time.time()
@@ -188,6 +201,7 @@ class IAlphaBeta(IAgent):
         return (bestMove, endTime - startTime)
 
 '''Agents'''
+#This agent uses the default offensive strategy provided.
 class AlphaBetaAgentOffensive1(IAlphaBeta):
     def evaluate(self, board):
         if board.checkWin() == self.player:
@@ -201,6 +215,7 @@ class AlphaBetaAgentOffensive1(IAlphaBeta):
             countA = board.countPlayerA()
             return 2 * (30 - countA) + random.random()
 
+#This agent uses the default defensive strategy provided.
 class AlphaBetaAgentDefensive1(IAlphaBeta):
     def evaluate(self, board):
         if board.checkWin() == self.player:
@@ -214,6 +229,7 @@ class AlphaBetaAgentDefensive1(IAlphaBeta):
             countB = board.countPlayerB()
             return (2 * countB) + random.random()
 
+#Greedy agent, implementing AlphaBetaAgentOffensive2's strategy.
 class GreedyAgentOffensive2(IGreedy):
     def evaluate(self, board):
         if board.checkWin() == self.player:
@@ -229,6 +245,8 @@ class GreedyAgentOffensive2(IGreedy):
             countA = board.countPlayerA()
             return 2 * (30 - countA) - 2 * rowScoreB
 
+#Improves upon the level 1 offensive strategy by tending to make moves that also move pieces
+#as far up the board as possible.
 class AlphaBetaAgentOffensive2(IAlphaBeta):
     def evaluate(self, board):
         if board.checkWin() == self.player:
@@ -244,6 +262,8 @@ class AlphaBetaAgentOffensive2(IAlphaBeta):
             countA = board.countPlayerA()
             return 2 * (30 - countA) - 2 * rowScoreB
 
+#Improves upon the level 1 defensive strategy by tending to make moves that also move pieces
+#as far up the board as possible.
 class AlphaBetaAgentDefensive2(IAlphaBeta):
     def evaluate(self, board):
         if board.checkWin() == self.player:
@@ -258,7 +278,9 @@ class AlphaBetaAgentDefensive2(IAlphaBeta):
         elif self.player == Player.B:
             countB = board.countPlayerA()
             return (2 * countB) - 2 * rowScoreA
-    
+
+#This agent utilizes the same strategy as AlphaBetaAgentOffensive2, but has a choice from a 
+#couple of popular Breakthrough openings that it will perform before doing any alpha-beta pruning.
 class AlphaBetaAgentOffensive2WithOpening(IAlphaBeta):
     def __init__(self, player, depth):
         self.player = player
@@ -278,6 +300,8 @@ class AlphaBetaAgentOffensive2WithOpening(IAlphaBeta):
             countA = board.countPlayerA()
             return 2 * (30 - countA) + (20 * rowScoreB) - (15 * rowScoreB) + random.random()
 
+#This agent utilizes the same strategy as AlphaBetaAgentDefensive2, but has a choice from a 
+#couple of popular Breakthrough openings that it will perform before doing any alpha-beta pruning.
 class AlphaBetaAgentDefensive2WithOpening(IAlphaBeta):
     def __init__(self, player, depth):
         self.player = player
@@ -297,6 +321,7 @@ class AlphaBetaAgentDefensive2WithOpening(IAlphaBeta):
             rowScoreB = board.getPlayerBRowScore()
             return (2 * countB) + (3 * rowScoreB) + random.random()
 
+#Minimax agent using the default offensive strategy.
 class MinimaxAgentOffensive1(IMinimax):
     def evaluate(self, board):
         if board.checkWin() == self.player:
@@ -309,7 +334,8 @@ class MinimaxAgentOffensive1(IMinimax):
         elif self.player == Player.B:
             countA = board.countPlayerA()
             return 2 * (30 - countA) + random.random()
-            
+           
+#Minimax agent using the default defensive strategy.
 class MinimaxAgentDefensive1(IMinimax):
     def evaluate(self, board):
         if board.checkWin() == self.player:

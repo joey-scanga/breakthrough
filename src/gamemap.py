@@ -1,17 +1,15 @@
 import sys, copy 
 from enum import IntEnum
 
+#This IntEnum instance keeps track of which player is which, by assigning Players A and B to 1 and
+#-1, respectively. This allows for easily switching players by negating the one given.
 class Player(IntEnum):
     A = 1
     B = -1
 
-'''
-Returns a 2D array of characters with the initial board position. 
-Blank squares are denoted with a '.', your pieces are denoted by 'O', 
-and the AI's pieces are denoted by 'X'.
-'''
-
+#Board object responsible for keeping track of game state.
 class Board:
+    #Board initializer.
     def __init__(self, board=None):
         if not board:
             self.board = [['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
@@ -23,6 +21,8 @@ class Board:
                 ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
                 ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
                 ]
+
+        #Long board option, if board="Long".
         elif board == "Long":
             self.board = [['X', 'X', 'X', 'X', 'X'],
                           ['X', 'X', 'X', 'X', 'X'],
@@ -37,7 +37,8 @@ class Board:
 
         else:
             self.board = board
-
+        
+        #Various game statistics to keep track of during play.
         self.initialPiecesPlayerA = self.countPlayerA()
         self.initialPiecesPlayerB = self.countPlayerB()
         self.nodesExpandedPlayerA = 0
@@ -49,6 +50,7 @@ class Board:
         self.moveCountA = 0
         self.moveCountB = 0
 
+    #Checks if a player has won based on the current ruleset.
     def checkWin(self, threePieces=False):
         if threePieces:
             if self.board[0].count('O') >= 3:
@@ -65,57 +67,14 @@ class Board:
         else: 
             return 0
 
-    def incrementNodesExpanded(self, player):
-        if player == Player.A:
-            self.nodesExpandedPlayerA += 1
-        else:
-            self.nodesExpandedPlayerB += 1
-
-    def updateMovingNodeAverage(self, player, nodesExpanded):
-        if player == Player.A:
-            if self.averageNodesExpandedPlayerA == 0:
-                self.averageNodesExpandedPlayerA = nodesExpanded
-            else:
-                self.averageNodesExpandedPlayerA = (self.nodesExpandedPlayerA) / self.moveCountA
-        else:
-            if self.averageNodesExpandedPlayerB == 0:
-                self.averageNodesExpandedPlayerB = nodesExpanded
-            else:
-                self.averageNodesExpandedPlayerB = (self.nodesExpandedPlayerB) / self.moveCountB
-
+    #Increments move count for given player. 
     def incrementMoveCount(self, player):
         if player == Player.A:
             self.moveCountA += 1
         else:
             self.moveCountB += 1
 
-
-    def getColumnsForPlayerA(self):
-        columnScore = 0
-        for i in range(len(self.board)):
-            for j in range(len(self.board[i])):
-                if i+1 <= 7 and i-1 >= 0:
-                    if self.board[i][j] == 'O' and self.board[i+1][j] == 'O' and self.board[i-1][j] == 'O':
-                        columnScore += 2
-                    elif self.board[i][j] == 'O' and self.board[i+1][j] == 'O':
-                        columnScore += 1
-                    elif self.board[i][j] == 'O' and self.board[i-1][j] == 'O':
-                        columnScore += 1
-        return columnScore
-                
-    def getColumnsForPlayerB(self):
-        columnScore = 0
-        for i in range(len(self.board)):
-            for j in range(len(self.board[i])):
-                if i+1 <= 7 and i-1 >= 0:
-                    if self.board[i][j] == 'X' and self.board[i+1][j] == 'X' and self.board[i-1][j] == 'O':
-                        columnScore += 2
-                    elif self.board[i][j] == 'X' and self.board[i+1][j] == 'X':
-                        columnScore += 1
-                    elif self.board[i][j] == 'X' and self.board[i-1][j] == 'X':
-                        columnScore += 1
-        return columnScore
-
+    #Returns number of player A's pieces.
     def countPlayerA(self):
         count = 0
         for row in self.board:
@@ -123,7 +82,8 @@ class Board:
                 if square == 'O':
                     count += 1
         return count
-
+    
+    #Returns number of player B's pieces.
     def countPlayerB(self):
         count = 0
         for row in self.board:
@@ -132,6 +92,7 @@ class Board:
                     count += 1
         return count
 
+    #Returns list of valid moves for player A.
     def getMovesForPlayerA(self):
         moves = []
         for i in range(len(self.board)):
@@ -145,7 +106,7 @@ class Board:
                         moves.append((i, j, i-1, j+1))
         return moves
 
-
+    #Returns list of valid moves for player B.
     def getMovesForPlayerB(self):
         moves = []
         for i in range(len(self.board)):
@@ -159,6 +120,8 @@ class Board:
                         moves.append((i, j, i+1, j+1))
         return moves
 
+    #Returns the number of rows away from home the furthest piece is. Used in level 2 eval
+    #function.
     def getPlayerARowScore(self):
         score = 7
         for row in self.board[1:]:
@@ -167,6 +130,8 @@ class Board:
        
         return score
 
+    #Returns the number of rows away from home the furthest piece is. Used in level 2 eval
+    #function.
     def getPlayerBRowScore(self):
         score = 7
         for row in self.board[-2::-1]:
@@ -175,6 +140,7 @@ class Board:
 
         return score
     
+    #Returns True if a move is valid.
     def checkValidMove(self, player, fromSquare, toSquare):
         if -1 in fromSquare or -1 in toSquare or len(self.board) == fromSquare[0] or len(self.board[0]) == fromSquare[1] or len(self.board) == toSquare[0] or len(self.board[0]) == toSquare[1]:
             return False
@@ -203,13 +169,7 @@ class Board:
                 return False
             return True
 
-
-    '''
-    Moves a piece on the board list from one square to another square.
-    Checks if the piece is an AI or human piece, and takes in the initial
-    piece position and where it's moving to. Returns True if a successful move
-    is made, returns False if not.
-    '''
+    #If valid, moves a piece from one square to another.
     def movePiece(self, player, fromSquare, toSquare):
         if self.checkValidMove(player, fromSquare, toSquare):
             self.board[fromSquare[0]][fromSquare[1]] = '.'
@@ -219,30 +179,15 @@ class Board:
                 self.board[toSquare[0]][toSquare[1]] = 'X'
         else:
             return False
+    
 
-    def testCurrentBoard(self):
-        testData = {}
-        testData["countA"] = testBoard.countPlayerA()
-        testData["countB"] = testBoard.countPlayerB()
-        testData["rowScoreA"] = testBoard.getPlayerARowScore()
-        testData["rowScoreB"] = testBoard.getPlayerBRowScore()
-        return testData
-
+    #Given a move, will return a copy of the current board after the move is made.
     def testMoveReturningBoard(self, player, fromSquare, toSquare):
         testBoard = copy.deepcopy(self)
         testBoard.movePiece(player, fromSquare, toSquare)
         return testBoard
 
-    def testMoveReturningData(self, player, fromSquare, toSquare):
-        testBoard = Board(self.board)
-        testBoard.movePiece(player, fromSquare, toSquare)
-        testData = {}         
-        testData["countA"] = testBoard.countPlayerA()
-        testData["countB"] = testBoard.countPlayerB()
-        testData["rowScoreA"] = testBoard.getPlayerARowScore()
-        testData["rowScoreB"] = testBoard.getPlayerBRowScore()
-        return testData
-
+    #Prints out current board state.
     def printBoard(self):
         for row in self.board:
             print(' '.join(row)+'\n')
